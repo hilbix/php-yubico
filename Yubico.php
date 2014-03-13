@@ -114,6 +114,22 @@ class Auth_Yubico
 	}
 	
 	/**
+	 * Return the Yubikey ID from an OTP (first 12 characters of Yubikey)
+	 *
+	 * @param  string    OTP
+	 * @return string    Yubikey ID
+	 * @access public
+	 */
+        function getIdent($otp)
+        {
+          $ret = $this->parsePasswordOTP($otp);
+	  if ($ret===false)
+	    return NULL;
+	  # Apparently only 'otp' is correctly decoded
+	  return substr($ret['otp'], 0, 12);
+        }
+
+	/**
          * Test if Curl support SSL
          * Will throw exception if curl was not complied with SSL support
          */
@@ -275,6 +291,7 @@ class Auth_Yubico
 	 *                             and 100 or "fast" or "secure".
 	 * @param int $timeout         Max number of seconds to wait
 	 *                             for responses
+	 * @return true	               throws on error
 	 * @access public
 	 */
 	function verify($token, $use_timestamp=null, $wait_for_all=False,
